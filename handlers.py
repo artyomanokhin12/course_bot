@@ -18,8 +18,13 @@ async def start_command(message: Message, command: aio_fiters.command.CommandObj
         r = await redis.Redis(host=bot_settings.HOST, port=bot_settings.PORT)
         async with r.pipeline() as pipe:
             await pipe.get(base_val)
-            base_val_bytes = await pipe.execute()
-        final_price = round(float(base_val_bytes[0].decode()) * int(quantity), 4)
+            if new_val != "RUB":
+                await pipe.get(new_val)
+            val_bytes = await pipe.execute()
+        if len(val_bytes) > 1:
+            final_price = round((float(val_bytes[0].decode())/float(val_bytes[1].decode())) * int(quantity), 4)
+        else:
+            final_price = round(float(val_bytes[0].decode()) * int(quantity), 4)
         await message.answer(f"Текущая стоимость {quantity} {base_val} в {new_val} - {final_price}")
     except ValueError:
         await message.answer(
