@@ -46,3 +46,7 @@ async def get_rates(message: Message) -> Message:
         for key, value in zip(keys[0], result):
             current_rates = current_rates + key.decode() + " " + value.decode() + '\n'
     return await message.answer(current_rates)
+
+@router.message()
+async def empty_message(message: Message):
+    await message.answer('Увы, но я не понимаю эту команду')
