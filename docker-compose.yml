@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  redis:
+    image: redis:7
+    container_name: cources_redis
+  
+  main:
+    image: course_bot
+    build: 
+      context: .
+    container_name: cource_bot
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    command: ["/app/docker_run.sh"]
